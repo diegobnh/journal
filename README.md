@@ -4,7 +4,7 @@
 * Depois de executar cada aplicação, nós executamos o seguinte script:
 
 ```console
-[dmoura@optane]$ ./get_memfootprint.sh 
+[dmoura@collect_trace]$ ./get_memfootprint.sh 
 ```
 
 Esse script irá gerar a quantidade de memória que deve ser disponibilizada a depender da pressão que será dada a aplicação. Nós estamos usando três níveis: 30%, 50% e 70%. Aplicar 30% significa dizer nós configuraremos a memória de modo a não disponibilizar 30% do footprint da aplicação, ou seja, nessa configuração 30% dos dados deverão estar no PMEM.
@@ -16,10 +16,16 @@ Esse script irá gerar a quantidade de memória que deve ser disponibilizada a d
 * Basta executarmos o seguinte comando para iniciar a coleta dos dados com diferentes níveis de pressão de memória:
 
 ```console
-[dmoura@optane]$ sudo ./start_run.sh
+[dmoura@collect_trace]$ sudo ./start_run.sh
 ```
 Ao final da execução podemos coletar o tempo de execução para cada tipo de pressão de memória:
 
 ```console
-[dmoura@optane]$ ./get_exec_times.sh
+[dmoura@collect_trace]$ ./get_exec_times.sh
+```
+
+Esse script irá gerar um arquivo chamado *exec_times.csv* . Ele serve de entrada para um plot dentro do folder plots.
+
+```console
+[dmoura@plots]$ python3 plot_exec_times_autonuma.py
 ```
