@@ -1,3 +1,25 @@
 # Get Memory Footprint
 
-* A primeira tarefa é descobrir o footprint de cada aplicação
+* A primeira tarefa é descobrir o footprint de cada aplicação, para isso nós precisamos rodar cada aplicação.
+* Depois de executar cada aplicação, nós executamos o seguinte script:
+
+```console
+[dmoura@optane]$ ./get_memfootprint.sh 
+```
+
+Esse script irá gerar a quantidade de memória que deve ser disponibilizada a depender da pressão que será dada a aplicação. Nós estamos usando três níveis: 30%, 50% e 70%. Aplicar 30% significa dizer nós configuraremos a memória de modo a não disponibilizar 30% do footprint da aplicação, ou seja, nessa configuração 30% dos dados deverão estar no PMEM.
+
+
+# Running with Memory Constraint
+
+* Para configurar a dram com diferentes níveis de pressão, nós criamos um programa (lock_memory.c) que recebe como parâmetro a quantidade a ser bloqueada de modo a forçar a aplicação a usar o PMEM.
+* Basta executarmos o seguinte comando para iniciar a coleta dos dados com diferentes níveis de pressão de memória:
+
+```console
+[dmoura@optane]$ sudo ./start_run.sh
+```
+Ao final da execução podemos coletar o tempo de execução para cada tipo de pressão de memória:
+
+```console
+[dmoura@optane]$ ./get_exec_times.sh
+```
