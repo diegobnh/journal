@@ -39,3 +39,7 @@ Para executar essa fase, nós executamos o seguinte comando:
 ```console
 [dmoura@collect_trace]$ sudo ./start_post_process.sh
 ```
+
+# Mapping
+
+* Nessa etapa nós iremos mapear os samples para as alocações. Vale ressaltar que como objetos superiores a 500GB goram divididos em chunks, após o mapemaneto já será possível saber quais chunks tiveram mais acessos.
