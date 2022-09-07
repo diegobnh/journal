@@ -10,6 +10,8 @@
 Esse script irá gerar a quantidade de memória que deve ser disponibilizada a depender da pressão que será dada a aplicação. Nós estamos usando três níveis: 30%, 50% e 70%. Aplicar 30% significa dizer nós configuraremos a memória de modo a não disponibilizar 30% do footprint da aplicação, ou seja, nessa configuração 30% dos dados deverão estar no PMEM.
 Além disso, existe um plot (**plot_mem_footprint.py**) que usa uma das saidas desse script (**mem_footprint.csv**) para gerar um gráfico de barras com o Resident Set Size obtido a partir do numastat. Tempo de duração dessa fase 84 minutos.
 
+Após essa fase poemos executar o script check_collect.sh para verificar se houve algum erro no trace. Se houver, ele irá imprimir algo.
+
 
 # Running with Memory Constraint
 
