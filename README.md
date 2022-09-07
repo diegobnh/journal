@@ -31,6 +31,8 @@ Esse script irá gerar um arquivo chamado *exec_times.csv* . Ele serve de entrad
 [dmoura@plots]$ python3 plot_exec_times_autonuma.py
 ```
 
+Tempo de duração dessa fase 375 minutos.
+
 # Post Processing
 
 * Nessa etapa nós iremos processar os dados do perf bem como das alocações interceptadas. Um ponto a destacar nessa fase é a necessidade de alterar o arquivo com as informações de alocação, de modo a quebrar alocações acima de um threshold (hoje configurado em 500MB). Para isso nós criamos um programa (mmap_break_to_chunks.py) que faz o calculo dos intervalos de endereço para cada chunk gerado.
