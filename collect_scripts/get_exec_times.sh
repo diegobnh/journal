@@ -3,7 +3,16 @@
 source app_dataset.sh
 
 
-rm -f exec_time_*.csv
+rm -f exec_time*.csv
+
+for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
+    start=$(sed -n 2p ${APP_DATASET[$j]}/autonuma/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
+    end=$(tail -n 1 ${APP_DATASET[$j]}/autonuma/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
+    exec_time_autonuma=$(echo $start $end | awk '{printf "%.2f", ($2-$1)/60}')
+
+    echo $exec_time_autonuma >> exec_time_default.csv
+done
+
 for ((i = 0; i < ${#TYPES_OF_MEM_PRESSURE[@]}; i++)); do
     for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
   	#-------------------------------------------------------------------------------------------------------------------
@@ -27,5 +36,6 @@ for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
     echo ${APP_DATASET[$j]} >> app_dataset.csv
 done
 
-paste app_dataset.csv exec_time_30.csv exec_time_50.csv exec_time_70.csv -d , > exec_times.csv
-rm -f exec_time_*.csv app_dataset.csv 
+paste app_dataset.csv exec_time_default.csv exec_time_30.csv exec_time_50.csv exec_time_70.csv -d , > exec_times.csv
+rm -f app_dataset.csv 
+rm -f exec_time_default.csv exec_time_30.csv exec_time_50.csv exec_time_70.csv
