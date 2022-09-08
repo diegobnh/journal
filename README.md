@@ -18,7 +18,8 @@ MEM_PRESSURE_70=("13" "14" "9" "11" "12" "12" "8" "11" "12" "12" "8" "10" "12" "
 TYPES_OF_MEM_PRESSURE=("30" "50" "70")
 ```
 
-Além disso, existe um plot (**plot_mem_footprint.py**) que usa uma das saidas desse script (**mem_footprint.csv**) para gerar um gráfico de barras com o Resident Set Size obtido a partir do numastat. Tempo de duração dessa fase 84 minutos.
+Além disso, existe um plot (**plot_mem_footprint.py**) que usa uma das saidas desse script (**mem_footprint.csv**) para gerar um gráfico de barras com o Resident Set Size obtido a partir do numastat. 
+* Tempo de duração dessa fase 84 minutos.
 
 # Running with Memory Constraint
 
@@ -40,7 +41,7 @@ Esse script irá gerar um arquivo chamado *exec_times.csv* . Ele serve de entrad
 [dmoura@plots]$ python3 plot_exec_times_autonuma.py
 ```
 
-Tempo de duração dessa fase 375 minutos.
+* Tempo de duração dessa fase 375 minutos.
 
 # Post Processing
 
