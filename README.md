@@ -1,6 +1,11 @@
 # Get Memory Footprint
 
 * A primeira tarefa é descobrir o memory footprint de cada aplicação. Para isso nós rodams cada aplicação normalmente.
+
+<p align="center">
+<a href="plots/RSS_per_application_sorted(GB).pdf" class="image fit"><img src="RSS_per_application_sorted(GB).png" width="500" alt=""></a>
+</p>
+
 * Depois de executar cada aplicação, nós executamos o seguinte script:
 
 ```console
