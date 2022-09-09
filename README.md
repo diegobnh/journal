@@ -52,6 +52,7 @@ Para executar essa fase, nós executamos o seguinte comando:
 ```console
 [dmoura@collect_trace]$ sudo ./start_post_process.sh
 ```
+* Tempo de duração dessa fase 336 minutos.
 
 # Mapping
 
