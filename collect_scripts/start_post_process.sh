@@ -17,14 +17,13 @@ for ((i = 0; i < ${#TYPES_OF_MEM_PRESSURE[@]}; i++)); do
         cd ${APP_DATASET[$j]}/$folder_name
 
         cp ../../post_process.sh .
-	    sudo ./post_process.sh ${APP[$j]} ${APP_DATASET[$j]} > /dev/null 2>&1
-	    rm post_process.sh
+	sudo ./post_process.sh ${APP[$j]} ${APP_DATASET[$j]} > /dev/null 2>&1
+	rm post_process.sh
+        
+        python3 ../../mmap_break_to_chunks.py
+        python3 ../../munmap_break_to_chunks.py
 
-        cp ../../mmap_break_to_chunks.py .
-        python3 mmap_break_to_chunks.py
-        rm mmap_break_to_chunks.py
-
-	    cd ../..
+        cd ../..
 	done
 done
 
