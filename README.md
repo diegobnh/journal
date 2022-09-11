@@ -1,6 +1,11 @@
 # Get Memory Footprint
 
-* A primeira tarefa é descobrir o memory footprint de cada aplicação. Para isso nós rodamos cada aplicação normalmente. Ver o memory footprint no folder plots.
+* A primeira tarefa é descobrir o memory footprint de cada aplicação. Para isso nós rodamos cada aplicação normalmente. 
+
+<p align="center">
+<a href="design.pdf" class="image fit"><img src="design.png" width="500" alt=""></a>
+</p>
+
 
 * Depois de executar cada aplicação, nós executamos o seguinte script:
 
