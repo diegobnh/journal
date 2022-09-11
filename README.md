@@ -3,7 +3,7 @@
 * A primeira tarefa é descobrir o memory footprint de cada aplicação. Para isso nós rodamos cada aplicação normalmente. 
 
 <p align="center">
-<a href="plots/RSS_per_application_sorted(GB).pdf" class="image fit"><img src="RSS_per_application_sorted.png" width="600" alt=""></a>
+<a href="plots/RSS_per_application_sorted(GB).pdf" class="image fit"><img src="RSS_per_application_sorted.png" width="700" alt=""></a>
 </p>
 
 
