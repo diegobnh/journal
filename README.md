@@ -48,7 +48,7 @@ Ao final da execução podemos coletar o tempo de execução para cada tipo de p
 Esse script irá gerar um arquivo chamado *exec_times.csv* . Ele serve de entrada para um plot dentro do folder plots.
 
 ```console
-[dmoura@plots]$ python3 plot_exec_times_autonuma.py
+[dmoura@plots]$ python3 plot_exec_times_slowdown_autonuma.py
 ```
 
 <p align="center">
