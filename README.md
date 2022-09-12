@@ -51,6 +51,10 @@ Esse script irá gerar um arquivo chamado *exec_times.csv* . Ele serve de entrad
 [dmoura@plots]$ python3 plot_exec_times_autonuma.py
 ```
 
+<p align="center">
+<a href="plots/exec_time_autonuma_mem_pressure.pdf" class="image fit"><img src="plots/exec_time_autonuma_mem_pressure.png" width="700" alt=""></a>
+</p>
+
 * Tempo de duração dessa fase 375 minutos.
 
 # Post Processing
