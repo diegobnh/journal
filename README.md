@@ -45,6 +45,10 @@ Ao final da execução podemos coletar o tempo de execução para cada tipo de p
 [dmoura@collect_trace]$ ./get_exec_times.sh
 ```
 
+<p align="center">
+<a href="plots/exec_time_autonuma_not_pressure.pdf" class="image fit"><img src="plots/exec_time_autonuma_not_pressure.png" width="700" alt=""></a>
+</p>
+
 Esse script irá gerar um arquivo chamado *exec_times.csv* . Ele serve de entrada para um plot dentro do folder plots.
 
 ```console
