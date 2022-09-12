@@ -14,16 +14,19 @@ for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
     #echo -n $mem_footprint
 
     pressure=`echo "(($mem_footprint) *  (70/100))" | bc -l`
+    pressure=`echo "((18000 - $pressure))" `
     gb_pressure=`echo "(($pressure/1000))" | bc`
-    echo -n "\"$gb_pressure\" " >> memory_pressure_70.csv
+    echo -n "\"$gb_pressure\" " >> memory_pressure_30.csv
 
     pressure=`echo "(($mem_footprint) *  (50/100))" | bc -l`
+    pressure=`echo "((18000 - $pressure))" `
     gb_pressure=`echo "(($pressure/1000))" | bc`
     echo -n "\"$gb_pressure\" " >> memory_pressure_50.csv
 
     pressure=`echo "(($mem_footprint) *  (30/100))" | bc -l`
+    pressure=`echo "((18000 - $pressure))" `
     gb_pressure=`echo "(($pressure/1000))" | bc`
-    echo -n "\"$gb_pressure\" " >> memory_pressure_30.csv
+    echo -n "\"$gb_pressure\" " >> memory_pressure_70.csv
 
 	echo ${APP_DATASET[$j]},$mem_footprint >> mem_footprint.csv
 	#-------------------------------------------------------------------------------------------------------------------
