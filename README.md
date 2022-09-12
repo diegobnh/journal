@@ -21,9 +21,9 @@
 Esse script irá gerar a quantidade de memória que deve ser disponibilizada a depender da pressão que será dada a aplicação. Nós estamos usando três níveis: 30%, 50% e 70%. Aplicar 30% significa dizer nós configuraremos a memória de modo a não disponibilizar 30% do footprint da aplicação, ou seja, nessa configuração 30% dos dados deverão estar no PMEM. O resultado em algo parecido com oque segue abaixo:
 
 ```console
-MEM_PRESSURE_30=("5" "6" "4" "5" "5" "5" "3" "4" "5" "5" "3" "4" "5" "5" "3" "4" )
-MEM_PRESSURE_50=("9" "10" "6" "8" "8" "9" "6" "7" "8" "8" "6" "7" "9" "9" "6" "7" )
-MEM_PRESSURE_70=("13" "14" "9" "11" "12" "12" "8" "11" "12" "12" "8" "10" "12" "12" "8" "11" )
+MEM_PRESSURE_30=("4" "3" "8" "6" "5" "5" "9" "6" "5" "5" "9" "7" "5" "5" "9" "6" )
+MEM_PRESSURE_50=("8" "7" "11" "9" "9" "8" "11" "10" "9" "9" "11" "10" "8" "8" "11" "10" )
+MEM_PRESSURE_70=("12" "11" "13" "12" "12" "12" "14" "13" "12" "12" "14" "13" "12" "12" "14" "13" )
 
 TYPES_OF_MEM_PRESSURE=("30" "50" "70")
 ```
