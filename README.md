@@ -6,6 +6,11 @@
 <a href="plots/RSS_per_application_sorted(GB).pdf" class="image fit"><img src="RSS_per_application_sorted.png" width="700" alt=""></a>
 </p>
 
+* Analisando o memory footprint ao longo do tempo.
+
+<p align="center">
+<a href="plots/RSS_s_time.pdf" class="image fit"><img src="RSS_vs_time.png" width="700" alt=""></a>
+</p>
 
 * Depois de executar cada aplicação, nós executamos o seguinte script:
 
