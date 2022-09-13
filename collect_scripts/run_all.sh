@@ -3,7 +3,7 @@
 
 sudo ./start_run_default_autonuma.sh
 
-./generate_pressure_autonuma.sh
+./generate_memory_pressures.sh
 
 sudo ./start_run_pressure_autonuma.sh
 
