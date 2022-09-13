@@ -2,8 +2,6 @@
 
 source app_dataset.sh
 
-gcc -o lock_memory lock_memory.c
-
 #Autonuma - Default
 for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
     echo "Running:"${APP_DATASET[$j]}
