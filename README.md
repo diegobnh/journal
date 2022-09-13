@@ -59,7 +59,7 @@ Esse script irá gerar um arquivo chamado *exec_times.csv* . Ele serve de entrad
 <a href="plots/exec_time_autonuma_mem_pressure.pdf" class="image fit"><img src="plots/exec_time_autonuma_mem_pressure.png" width="700" alt=""></a>
 </p>
 
-* Tempo de duração dessa fase 375 minutos.
+* Tempo de duração dessa fase 205 minutos.
 
 # Post Processing
 
