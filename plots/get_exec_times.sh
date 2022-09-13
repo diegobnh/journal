@@ -1,13 +1,12 @@
 #!/bin/bash
 
-source app_dataset.sh
-
+source ../app_dataset.sh
 
 rm -f exec_time*.csv
 
 for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
-    start=$(sed -n 2p ${APP_DATASET[$j]}/autonuma/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
-    end=$(tail -n 1 ${APP_DATASET[$j]}/autonuma/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
+    start=$(sed -n 2p ../${APP_DATASET[$j]}/autonuma/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
+    end=$(tail -n 1 ../${APP_DATASET[$j]}/autonuma/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
     exec_time_autonuma=$(echo $start $end | awk '{printf "%.2f", ($2-$1)/60}')
 
     echo $exec_time_autonuma >> exec_time_default.csv
@@ -16,15 +15,15 @@ done
 for ((i = 0; i < ${#TYPES_OF_MEM_PRESSURE[@]}; i++)); do
     for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
   	#-------------------------------------------------------------------------------------------------------------------
-  	start=$(sed -n 2p ${APP_DATASET[$j]}/autonuma_${MEM_PRESSURE[$i]}/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
+  	start=$(sed -n 2p ../${APP_DATASET[$j]}/autonuma_${MEM_PRESSURE[$i]}/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
 	end=$(tail -n 1 ${APP_DATASET[$j]}/autonuma_${MEM_PRESSURE[$i]}/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
 	exec_time_autonuma=$(echo $start $end | awk '{printf "%.2f", ($2-$1)/60}')
 
-	#start=$(sed -n 2p ${APP_DATASET[$j]}/static_mapping/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
-	#end=$(tail -n 1 ${APP_DATASET[$j]}/static_mapping/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
+	#start=$(sed -n 2p ../${APP_DATASET[$j]}/static_mapping/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
+	#end=$(tail -n 1 ../${APP_DATASET[$j]}/static_mapping/track_info_${APP_DATASET[$j]}.csv | awk -F, '{print $1}')
 	#exec_time_static_mapping=$(echo $start $end | awk '{print ($2-$1)/60}')
 
-	#echo -n ${APP_DATASET[$j]},$exec_time_autonuma,$exec_time_static_mapping, >> input_exec_time.csv
+	#echo -n ../${APP_DATASET[$j]},$exec_time_autonuma,$exec_time_static_mapping, >> input_exec_time.csv
 	#echo $exec_time_static_mapping $exec_time_autonuma | awk '{print (1-($1/$2))*100}' >> input_exec_time.csv
 	#-------------------------------------------------------------------------------------------------------------------
     echo $exec_time_autonuma >> exec_time_${TYPES_OF_MEM_PRESSURE[$i]}.csv
