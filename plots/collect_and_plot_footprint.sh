@@ -18,7 +18,7 @@ done
 
 cd plots
 cat temp/*.csv > temp/all_app_avg_footprint.csv
-python3 plot_mem_footprint.py temp/all_app_avg_footprint.csv
+python3 plot_footprint.py temp/all_app_avg_footprint.csv
 
 mv temp/*.pdf .
 rm -r temp
