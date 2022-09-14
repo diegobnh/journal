@@ -13,7 +13,7 @@ for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
     rm -f *
 
     cp ../../run.sh .
-    cp ../../shared_library/mmap_intercept_only_to_trace.so .
+    cp ../../../shared_library/mmap_intercept_only_to_trace.so .
 
     sudo ./run.sh ${APP[$j]} ${DATASET[$j]} autonuma
 
