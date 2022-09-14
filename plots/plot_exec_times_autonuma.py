@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 df = pd.read_csv("../exec_times.csv", names=["app_name", "No_pressure", "Pressure_30", "Pressure_50", "Pressure_70"])
 df = df[["app_name", "No_pressure"]]
 
+df.sort_values(by="app_name", inplace=True)
 df.set_index("app_name", inplace=True)
-df.sort_values(by="No_pressure", inplace=True)
 
 ax = df.plot(kind="bar", figsize=(7, 3), legend=False)
 ax.spines['top'].set_visible(False)
