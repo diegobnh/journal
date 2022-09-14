@@ -2,7 +2,7 @@
 
 source app_dataset.sh
 
-gcc -o ../../lock_memory ../../lock_memory.c
+sudo -u dmoura gcc -o lock_memory lock_memory.c
 
 #Autonuma with Memory Pressure
 for ((i = 0; i < ${#TYPES_OF_MEM_PRESSURE[@]}; i++)); do
