@@ -85,9 +85,9 @@ if [[ $3 == "autonuma" ]]; then
     setup_autonuma_parameters
     export APP="${1}["    #if you dont put [, sometimes we will collect wrong things for example libc.so[ and ./bc[ both has "bc" string
     if [[ $1 == "bc" || $1 == "pr" ]]; then
-        LD_PRELOAD=./mmap_intercept_only_to_trace.so /mnt/myPMEM/gapbs/./$1 -f /mnt/myPMEM/gapbs/benchmark/graphs/$2".sg" 1> /dev/null 2> "allocations_"$1"_"$2".csv"
+        LD_PRELOAD=./mmap_intercept_only_to_trace.so $GAPBS_PATH/./$1 -f $GAPBS_PATH/benchmark/graphs/$2".sg" 1> /dev/null 2> "allocations_"$1"_"$2".csv"
     else
-        LD_PRELOAD=./mmap_intercept_only_to_trace.so /mnt/myPMEM/gapbs/./$1 -f /mnt/myPMEM/gapbs/benchmark/graphs/$2".sg" -n128 1> /dev/null 2> "allocations_"$1"_"$2".csv"
+        LD_PRELOAD=./mmap_intercept_only_to_trace.so $GAPBS_PATH/./$1 -f $GAPBS_PATH/benchmark/graphs/$2".sg" -n128 1> /dev/null 2> "allocations_"$1"_"$2".csv"
     fi
 elif [[ $3 == "static_mapping" ]] ; then
     setup_static_mapping_parameters
