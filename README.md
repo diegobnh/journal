@@ -68,6 +68,12 @@ Esse script irá gerar um arquivo chamado *exec_times.csv* . Ele serve de entrad
 <a href="plots/max_allocation_in_pmem.pdf" class="image fit"><img src="plots/max_allocation_in_pmem.png" width="700" alt=""></a>
 </p>
 
+<p align="center">
+<a href="plots/perc_access_in_pmem.pdf" class="image fit"><img src="plots/perc_access_in_pmem.png" width="700" alt=""></a>
+</p>
+
+
+
 * Tempo de duração dessa fase 205 minutos.
 
 # Post Processing
