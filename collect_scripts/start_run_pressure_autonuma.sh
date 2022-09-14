@@ -17,7 +17,7 @@ for ((i = 0; i < ${#TYPES_OF_MEM_PRESSURE[@]}; i++)); do
             folder_name="autonuma_70"
             mem_press=${MEM_PRESSURE_70[$j]}
         fi
-        echo "Running:"${APP_DATASET[$j]}, "Memory Pressure of "${MEM_PRESSURE[$i]}
+        echo "Running:"${APP_DATASET[$j]}, "Memory Pressure of "${TYPES_OF_MEM_PRESSURE[$i]}
 
         sudo -u dmoura mkdir -p ${APP_DATASET[$j]}
 	sudo -u dmoura mkdir -p ${APP_DATASET[$j]}/$folder_name
