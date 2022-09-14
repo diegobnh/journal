@@ -2,7 +2,7 @@
 
 source app_dataset.sh
 
-gcc -o lock_memory lock_memory.c
+gcc -o ../../lock_memory ../../lock_memory.c
 
 #Autonuma with Memory Pressure
 for ((i = 0; i < ${#TYPES_OF_MEM_PRESSURE[@]}; i++)); do
@@ -27,7 +27,7 @@ for ((i = 0; i < ${#TYPES_OF_MEM_PRESSURE[@]}; i++)); do
 	rm -f *
 
 	cp ../../run.sh .
-	cp ../../shared_library/mmap_intercept_only_to_trace.so .
+	cp ../../../shared_library/mmap_intercept_only_to_trace.so .
 
         numactl --membind=0 ../.././lock_memory $mem_press &
         lock_memory_pid=$!
