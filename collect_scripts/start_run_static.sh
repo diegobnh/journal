@@ -13,7 +13,7 @@ for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
     rm -f *
 
     cp ../../run.sh .
-    cp ../../shared_library/mmap_intercept_to_static_bind.so .
+    cp ../../../shared_library/mmap_intercept_to_static_bind.so .
 
     sudo ./run.sh ${APP[$j]} ${DATASET[$j]} static_mapping
 
