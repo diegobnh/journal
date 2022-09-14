@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 df = pd.read_csv("../exec_times.csv", names=["app_name", "No_pressure", "Pressure_30", "Pressure_50", "Pressure_70"])
 
+df.sort_values(by="app_name", inplace=True)
 df["Pressure_30"] = round(df["Pressure_30"]/df["No_pressure"], 2)
 df["Pressure_50"] = round(df["Pressure_50"]/df["No_pressure"], 2)
 df["Pressure_70"] = round(df["Pressure_70"]/df["No_pressure"], 2)
