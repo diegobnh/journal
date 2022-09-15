@@ -13,17 +13,29 @@ for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
     mem_footprint=$(cat ${APP_DATASET[$j]}/autonuma/track_info_${APP_DATASET[$j]}.csv | awk -F, 'NR>1{print $2+$3}' | datamash max 1)
     #echo -n $mem_footprint
 
-    pressure=`echo "(($mem_footprint) *  (70/100))" | bc -l`
+    if [ $mem_footprint -gt 18000 ] ; then
+       pressure=`echo "((18000) *  (70/100))" | bc -l`
+    else
+       pressure=`echo "(($mem_footprint) *  (70/100))" | bc -l`
+    fi
     pressure=`echo "((18000 - $pressure))" `
     gb_pressure=`echo "(($pressure/1000))" | bc`
     echo -n "\"$gb_pressure\" " >> memory_pressure_30.csv
 
-    pressure=`echo "(($mem_footprint) *  (50/100))" | bc -l`
+    if [ $mem_footprint -gt 18000 ] ; then
+       pressure=`echo "((18000) *  (50/100))" | bc -l`
+    else
+       pressure=`echo "(($mem_footprint) *  (50/100))" | bc -l`
+    fi
     pressure=`echo "((18000 - $pressure))" `
     gb_pressure=`echo "(($pressure/1000))" | bc`
     echo -n "\"$gb_pressure\" " >> memory_pressure_50.csv
 
-    pressure=`echo "(($mem_footprint) *  (30/100))" | bc -l`
+    if [ $mem_footprint -gt 18000 ] ; then
+       pressure=`echo "((18000) *  (30/100))" | bc -l`
+    else
+       pressure=`echo "(($mem_footprint) *  (30/100))" | bc -l`
+    fi
     pressure=`echo "((18000 - $pressure))" `
     gb_pressure=`echo "(($pressure/1000))" | bc`
     echo -n "\"$gb_pressure\" " >> memory_pressure_70.csv
