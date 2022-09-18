@@ -34,11 +34,11 @@ mv temp loads.txt
 sed -i "s/$/,r/" loads.txt
 
 #stores
-#perf script -f --comms=$1 | sed 's/cpu\/mem-loads,ldlat=30\/P:/loads/g' | sed 's/cpu\/mem-stores\/P:/stores/g' | grep -w "stores" | sed 's/L1 hit/L1_hit/g' | sed 's/L1 miss/L1_miss/g' | awk '{OFS=","}{print $4,"0x"$7,$9,0,$2,"TLB_null,w"}' | tr -d ":" | sed 's/|SNP//g' >  stores.txt
+perf script -f --comms=$1 | sed 's/cpu\/mem-loads,ldlat=30\/P:/loads/g' | sed 's/cpu\/mem-stores\/P:/stores/g' | grep -w "stores" | sed 's/L1 hit/L1_hit/g' | sed 's/L1 miss/L1_miss/g' | awk '{OFS=","}{print $4,"0x"$7,$9,$2,0,0x$NF,"TLB_null,w"}' | tr -d ":" | sed 's/|SNP//g' >  stores.txt
 
 #merge loads and stores
-#cat loads.txt stores.txt > "memory_trace_"$2".csv"
-mv loads.txt "memory_trace_"$2".csv"
+cat loads.txt stores.txt > "memory_trace_"$2".csv"
+#mv loads.txt "memory_trace_"$2".csv"
 
 #delete files
 rm -f *.txt
