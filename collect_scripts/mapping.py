@@ -91,32 +91,33 @@ def _convert_call_stack_to_object(call_stack):
 
     return object_name
 def read_mmap_trace(app_dataset):
-    #trace_mmap = trace_path + "/mmap_trace/mmap_trace_" + app_dataset + ".csv"
     trace_mmap = trace_path + "/mmap_trace_" + app_dataset + ".csv"
+    #trace_mmap = trace_path + "/mmap_trace_by_chunk_" + app_dataset + ".csv"
     headers =  ['ts_event_start','mmap','size_allocation', 'start_addr_hex','call_stack_hash', 'call_stack_hexadecimal']
 
     #convert execution_times to date and create new column
-    datasets.df_mmap = pd.read_csv(trace_mmap, names=headers,low_memory=False)
+    datasets.df_mmap = pd.read_csv(trace_mmap, names=headers, low_memory=False, skip_blank_lines=True)
     #remove any empty row
     datasets.df_mmap.dropna(inplace=True)
+    datasets.df_mmap['ts_event_start'] = pd.to_numeric(datasets.df_mmap['ts_event_start'], errors='coerce')
+    datasets.df_mmap = datasets.df_mmap.dropna()
 
-    datasets.df_mmap['ts_event_start'] = pd.to_numeric(datasets.df_mmap['ts_event_start'])
     datasets.df_mmap['start_addr_decimal'] = datasets.df_mmap['start_addr_hex'].apply(int, base=16)
     datasets.df_mmap['end_addr_decimal'] = datasets.df_mmap['start_addr_decimal'] + datasets.df_mmap['size_allocation']
     datasets.df_mmap['call_stack_hexadecimal'] = datasets.df_mmap['call_stack_hexadecimal'].astype(str)
     datasets.df_mmap['obj_name'] = datasets.df_mmap['call_stack_hexadecimal'].apply(_convert_call_stack_to_object)
+
 def read_munmap_trace(app_dataset):
-    #trace_munmap = trace_path + "/mmap_trace/munmap_trace_" + app_dataset + ".csv"
     trace_munmap = trace_path + "/munmap_trace_" + app_dataset + ".csv"
-    headers=  ['ts_event','munmap','start_addr_decimal','size_allocation']
+    #trace_munmap = trace_path + "/munmap_trace_by_chunk_" + app_dataset + ".csv"
+    headers=  ['ts_event_start','munmap','start_addr_hex','size_allocation']
 
-    datasets.df_munmap = pd.read_csv(trace_munmap, names=headers,low_memory=False)
+    datasets.df_munmap = pd.read_csv(trace_munmap, names=headers, low_memory=False)
     #remove any empty row
-    datasets.df_munmap.dropna(inplace=True)
+    #datasets.df_munmap.dropna(inplace=True)
 
-
-    datasets.df_munmap['ts_event'] = pd.to_numeric(datasets.df_munmap['ts_event'])
-    datasets.df_munmap['start_addr_decimal'] = datasets.df_munmap['start_addr_decimal'].apply(int, base=16)
+    datasets.df_munmap['ts_event_start'] = pd.to_numeric(datasets.df_munmap['ts_event_start'])
+    datasets.df_munmap['start_addr_decimal'] = datasets.df_munmap['start_addr_hex'].apply(int, base=16)
 def mapping_mmap_to_munmap():
     '''
     This function is responsible to identify when an mmap is desalocated. We are assume that the first munmap with the same size and address from an mmap is the match for mmap.
@@ -142,8 +143,8 @@ def mapping_mmap_to_munmap():
                  list_index_mmap.append(index_i+1)
                  list_index_munmap.append(index_j+1)
 
-                 life_time_new_column[index_i]= round(row_j['ts_event'] - row_i['ts_event_start'],4)
-                 ts_end_new_column[index_i] = row_j['ts_event']
+                 life_time_new_column[index_i]= round(row_j['ts_event_start'] - row_i['ts_event_start'],4)
+                 ts_end_new_column[index_i] = row_j['ts_event_start']
 
                  df_mmap_temp.drop(index_i, inplace=True)
                  df_munmap_temp.drop(index_j, inplace=True)
@@ -174,24 +175,34 @@ def read_perfmem_trace(app_dataset):
     headers=  ['ts_event','virt_addr','mem_level','thread_rank','access_weight', 'phys_addr' ,'tlb', 'access_type']
     #file_name = trace_path + "/perfmem_trace/" + "memory_trace_"+ app_dataset + ".csv"
     file_name = trace_path + "/memory_trace_"+ app_dataset + ".csv"
-    datasets.df_perfmem = pd.read_csv(file_name, names=headers,low_memory=False) #nrows=10000)
-    #filter
-    datasets.df_perfmem = datasets.df_perfmem.loc[datasets.df_perfmem['access_type'] == "r"]
-    all_loads = datasets.df_perfmem.shape[0]
-    datasets.df_perfmem = datasets.df_perfmem[datasets.df_perfmem.mem_level.str.contains('Ram|PMEM', regex= True, na=False)]
-    only_loads_out_of_cache = datasets.df_perfmem.shape[0]
+    datasets.df_perfmem = pd.read_csv(file_name, names=headers,low_memory=False) #nrows=10000, skiprows = lambda i: i % 10)
+
+    df_load_store = datasets.df_perfmem.access_type.value_counts(normalize=True).mul(100).round(2).rename_axis('Access_type').reset_index(name='Number of Samples')
+    out = "summary_load_vs_store_access_" + g_current_app_dataset + ".csv"
+    df_load_store.to_csv(out, index=False)
+
+    df_stores = datasets.df_perfmem.loc[datasets.df_perfmem['access_type'] == "w"]
+
+    df_loads = datasets.df_perfmem.loc[datasets.df_perfmem['access_type'] == "r"]
+
+    df_loads_summary = df_loads.mem_level.value_counts(normalize=True).mul(100).round(2).rename_axis('Memory Level').reset_index(name='Number of Samples')
+    out = "summary_load_access_" + g_current_app_dataset + ".csv"
+    df_loads_summary.to_csv(out, index=False)
+
+    all_loads = df_loads.shape[0]
+    df_loads_outside = df_loads[df_loads.mem_level.str.contains('Ram|PMEM', regex= True, na=False)]
+    only_loads_out_of_cache = df_loads_outside.shape[0]
     #remove any empty row
-    datasets.df_perfmem.dropna(inplace=True)
+    #datasets.df_perfmem.dropna(inplace=True)
 
     ratio = round((only_loads_out_of_cache/all_loads)*100,2)
     cmd = "echo " + str(ratio) + " > ratio_out_of_cache_" + str(g_current_app_dataset) + ".txt"
     os.system(cmd)
-    
-    if not datasets.df_perfmem.empty:
-        datasets.df_perfmem['virt_addr_decimal'] = datasets.df_perfmem['virt_addr'].apply(int, base=16)
-        #datasets.df_perfmem['virt_page_number'] = datasets.df_perfmem['virt_addr'].apply(lambda x: int(x, 16) >> 12)
-        datasets.df_perfmem['ts_event'] = pd.to_numeric(datasets.df_perfmem['ts_event'])
 
+    datasets.df_perfmem = df_stores.append(df_loads)
+    datasets.df_perfmem.reset_index(drop=True, inplace=True)
+    datasets.df_perfmem['virt_addr_decimal'] = datasets.df_perfmem['virt_addr'].apply(int, base=16)
+    datasets.df_perfmem['ts_event'] = pd.to_numeric(datasets.df_perfmem['ts_event'])
     datasets.df_perfmem.sort_values(by=['ts_event'],inplace=True)
 def mapping_memory_trace_to_mmap(df_perfmem):
     list_mmap_index = []
@@ -288,14 +299,20 @@ def main():
 
         df = pd.concat(df_list,ignore_index=True)
         df.sort_values(by=['ts_event'],inplace=True)
-        
+
         df_DRAM = df[df.mem_level.str.contains('Ram', regex= True, na=False)]
         df_PMEM = df[df.mem_level.str.contains('PMEM', regex= True, na=False)]
-        
-        out = "perfmem_trace_mapped_DRAM_" + g_current_app_dataset + ".csv"
+        df_stores = df.loc[df['access_type'] == "w"]
+
+        df_DRAM.drop(['virt_addr_decimal', 'phys_addr', 'thread_rank', 'access_type', 'mem_level'], axis=1, inplace=True)
+        df_PMEM.drop(['virt_addr_decimal', 'phys_addr', 'thread_rank', 'access_type', 'mem_level'], axis=1, inplace=True)
+        df_stores.drop(['virt_addr_decimal', 'phys_addr', 'thread_rank', 'access_type', 'mem_level','access_weight','tlb'], axis=1, inplace=True)
+
+        out = "memory_trace_mapped_dram_" + g_current_app_dataset + ".csv"
         df_DRAM.to_csv(out, index=False)
-        out = "perfmem_trace_mapped_PMEM_" + g_current_app_dataset + ".csv"
+        out = "memory_trace_mapped_pmem_" + g_current_app_dataset + ".csv"
         df_PMEM.to_csv(out, index=False)
-    
+        out = "memory_trace_mapped_stores_" + g_current_app_dataset + ".csv"
+        df_stores.to_csv(out, index=False)
 if __name__ == "__main__":
    main()
