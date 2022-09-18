@@ -13,8 +13,10 @@
 #include <sys/time.h>
 #define _GNU_SOURCE
 #include <pthread.h>
-#define SIZE 8192
+#define SIZE 2048
 #include <sys/resource.h> 
+
+#define CHUNK_SIZE 500002816UL
 
 FILE *g_fp=NULL;
 char *g_line = NULL;
@@ -36,31 +38,30 @@ long int hash (char* word)
 void
 redirect_stdout(char *filename)
 {
-	int fd;
-	if ((fd = open(filename,O_CREAT|O_WRONLY,0666)) < 0){
-	   perror(filename);
-	   exit(1);
-	}
-	close(1);
-	if (dup(fd) !=1){
-	   fprintf(stderr,"Unexpected dup failure\n");
-	   exit(1);
-	}
-	close(fd);
+    int fd;
+    if ((fd = open(filename,O_CREAT|O_WRONLY,0666)) < 0){
+       perror(filename);
+       exit(1);
+    }
+    close(1);
+    if (dup(fd) !=1){
+       fprintf(stderr,"Unexpected dup failure\n");
+       exit(1);
+    }
+    close(fd);
 
-	g_fp = fopen("call_stack.txt", "w+");
-	if(g_fp==NULL){
-	   printf("Error when try to use fopen!!\n");
-	}
+    g_fp = fopen("call_stack.txt", "w+");
+    if(g_fp==NULL){
+       printf("Error when try to use fopen!!\n");
+    }
 }
 
-void get_call_stack(int size_allocation, char *call_stack_concat) {
+void get_call_stack(char *call_stack) {
     int static mmap_id=0;
     int nptrs;
     void *buffer[SIZE];
     ssize_t read;
     char *addr;
-    char size[100]="";
     int j;
     char **strings;
 
@@ -71,6 +72,7 @@ void get_call_stack(int size_allocation, char *call_stack_concat) {
     int i; // callstack_line_index;
     int k=0;
     const char* substring = getenv("APP");
+
 
     char *p;
     //while ((read = getline(&g_line, &len, g_fp)) != -1) {
@@ -89,15 +91,14 @@ void get_call_stack(int size_allocation, char *call_stack_concat) {
           {
 		if(g_line[i] ==']')
                     break;
-                call_stack_concat[k] = g_line[i];
+                call_stack[k] = g_line[i];
                 k++;
 	  }
-          call_stack_concat[k] = ':';
+          call_stack[k] = ':';
           k++;
        }
     }
-    call_stack_concat[k-1] = '\0';
-    strcat(call_stack_concat,size);
+    call_stack[k-1] = '\0';
 }
 
 
@@ -110,28 +111,92 @@ hook(long syscall_number,
 {
 
         int static mmap_id=0;
+        int i;
         struct timespec ts;
-        //long int hash;
-        char call_stack_concat[SIZE]="";
-        //long result;
+        char size[SIZE];
+        char chunk_index[3];
+        char temp_call_stack[SIZE];
+        char call_stack[SIZE]="";
+        unsigned long long remnant_size;
+        int total_obj;
 
 	if (syscall_number == SYS_mmap) {
 
-		/* pass it on to the kernel */
-		*result = syscall_no_intercept(syscall_number, arg0, arg1, arg2, arg3, arg4, arg5);
+	       *result = syscall_no_intercept(syscall_number, arg0, arg1, arg2, arg3, arg4, arg5);
 
-		pthread_mutex_lock(&count_mutex);
-		clock_gettime(CLOCK_MONOTONIC, &ts);
-		get_call_stack(arg1,call_stack_concat);
-		fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec,arg1,(void *)*result,hash(call_stack_concat),call_stack_concat);
-		pthread_mutex_unlock(&count_mutex);
+	       pthread_mutex_lock(&count_mutex);
+	       clock_gettime(CLOCK_MONOTONIC, &ts);
+               get_call_stack(call_stack);
+               i = 0;
+               if(arg1 > CHUNK_SIZE){
+		    total_obj = arg1/CHUNK_SIZE;
+		    remnant_size = arg1 - (total_obj * CHUNK_SIZE);
 
-		return 0;
+		    while(i < total_obj){
+                         strcat(temp_call_stack,call_stack);
+                         sprintf(size, ":%d", CHUNK_SIZE);
+                         strcat(temp_call_stack, size);
+                         sprintf(chunk_index, ":%d", i);
+                         strcat(temp_call_stack, chunk_index);
+
+                         fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec, CHUNK_SIZE,(void *)*result + (i * CHUNK_SIZE),hash(temp_call_stack),temp_call_stack);
+
+		         i++;
+
+                         memset(&temp_call_stack[0], 0, sizeof(temp_call_stack));
+                         memset(&size[0], 0, sizeof(size));
+                         memset(&chunk_index[0], 0, sizeof(chunk_index));
+		    }
+		    if(remnant_size > 0){
+                         strcat(temp_call_stack,call_stack);
+                         sprintf(size, ":%d", remnant_size);
+                         strcat(temp_call_stack, size);
+                         sprintf(chunk_index, ":%d", i);
+                         strcat(temp_call_stack, chunk_index);
+
+                         fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec, remnant_size,(void *)*result + (i * CHUNK_SIZE),hash(temp_call_stack),temp_call_stack);
+		    }else{
+                         strcat(temp_call_stack,call_stack);
+                         sprintf(size, ":%d", CHUNK_SIZE);
+                         strcat(temp_call_stack, size);
+                         sprintf(chunk_index, ":%d", i);
+                         strcat(temp_call_stack, chunk_index);
+
+                         fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec, CHUNK_SIZE,(void *)*result + (i * CHUNK_SIZE),hash(temp_call_stack),temp_call_stack);
+		    }
+	       }else{
+                     strcat(temp_call_stack,call_stack);
+                     sprintf(size, ":%d", arg1);
+                     strcat(temp_call_stack, size);
+                     sprintf(chunk_index, ":%d", i);
+                     strcat(temp_call_stack, chunk_index);
+   		     fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec,arg1,(void *)*result,hash(temp_call_stack),temp_call_stack);
+	       }
+
+   	       pthread_mutex_unlock(&count_mutex);
+
+	       return 0;
 	}else if(syscall_number == SYS_munmap){
 		/* pass it on to the kernel */
 		*result = syscall_no_intercept(syscall_number, arg0, arg1, arg2, arg3, arg4, arg5);
 		clock_gettime(CLOCK_MONOTONIC, &ts);
-		fprintf(stderr, "%ld.%ld,munmap,%p,%ld\n", ts.tv_sec,ts.tv_nsec, (void *)arg0, arg1);
+
+                if(arg1 > CHUNK_SIZE){
+                    total_obj = arg1/CHUNK_SIZE;
+                    remnant_size = arg1 - (total_obj * CHUNK_SIZE);
+
+                    while(i < total_obj){
+                        fprintf(stderr, "%ld.%ld,munmap,%p,%ld\n", ts.tv_sec,ts.tv_nsec, (void *)*result + (i * CHUNK_SIZE), CHUNK_SIZE);
+                        i++;
+                    }
+                    if(remnant_size > 0){
+                        fprintf(stderr, "%ld.%ld,munmap,%p,%ld\n", ts.tv_sec,ts.tv_nsec, (void *)*result + (i * CHUNK_SIZE), remnant_size);
+                    }else{
+                        fprintf(stderr, "%ld.%ld,munmap,%p,%ld\n", ts.tv_sec,ts.tv_nsec, (void *)*result + (i * CHUNK_SIZE), CHUNK_SIZE);
+                    }
+                }else{
+   		    fprintf(stderr, "%ld.%ld,munmap,%p,%ld\n", ts.tv_sec,ts.tv_nsec, (void *)arg0, arg1);
+                }
 		return 0;
 	}else {
 		/*
