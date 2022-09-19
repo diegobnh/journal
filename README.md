@@ -9,7 +9,7 @@
 * Analisando o memory footprint ao longo do tempo.
 
 <p align="center">
-<a href="plots/RSS_s_time.pdf" class="image fit"><img src="plots/RSS_vs_time.png" width="700" alt=""></a>
+<a href="plots/RSS_vs_time.pdf" class="image fit"><img src="plots/RSS_vs_time.png" width="700" alt=""></a>
 </p>
 
 * Analisando o tempo de execução
