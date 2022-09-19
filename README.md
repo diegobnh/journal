@@ -91,4 +91,4 @@ Para executar essa fase, nós executamos o seguinte comando:
 
 * Nessa etapa nós iremos mapear os samples para as alocações. Vale ressaltar que como objetos superiores a 500GB goram divididos em chunks, após o mapemaneto já será possível saber quais chunks tiveram mais acessos.
 
-* Tempo de duração dessa fase 254 minutos.
+* Tempo de duração dessa fase 23,4 horas.
