@@ -33,7 +33,7 @@ Now we have a new dataframe where each column represent an application
 #------------------------------------------------------------------------------------------
 ax = new_df.plot(marker='o', color=colors)
 ax.set_xticks(np.arange(len(labels)))
-ax.set_xticklabels(labels)
+ax.set_xticklabels(labels, fontsize=14)
 #new_df.plot(color=colors, ax=ax)
 
 #plt.title('Memory Footprint Profile')
