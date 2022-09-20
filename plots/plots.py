@@ -884,7 +884,7 @@ def plot_percentage_access_on_PMEM_and_DRAM():
 
     df.plot(x="app_name", y=["dram_30", "pmem_30"], kind="bar", ax=axarr[0])
     df.plot(x="app_name", y=["dram_50", "pmem_50"], kind="bar", ax=axarr[1])
-    df.plot(x="app_name", y=["dram_70", "pmem_50"], kind="bar", ax=axarr[2])
+    df.plot(x="app_name", y=["dram_70", "pmem_70"], kind="bar", ax=axarr[2])
 
     axarr[0].spines['top'].set_visible(False)
     for p in axarr[0].patches:
