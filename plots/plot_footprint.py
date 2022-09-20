@@ -37,8 +37,8 @@ ax.set_xticklabels(labels)
 #new_df.plot(color=colors, ax=ax)
 
 #plt.title('Memory Footprint Profile')
-plt.xlabel('Percentage of Execution Time')
-plt.ylabel('Resident Set Size (GB)')
+plt.xlabel('Percentage of Execution Time',fontsize=14)
+plt.ylabel('Resident Set Size (GB)', fontsize=14)
 plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
 
 name_file="RSS_vs_time.pdf"
@@ -55,13 +55,13 @@ df_max_pss.set_index("app_name", inplace=True)
 
 ax = df_max_pss.plot.bar(color=[colors],legend=False,figsize=(10, 3))
 for p in ax.patches:
-    ax.annotate(format(p.get_height(), '.1f'), (p.get_x() + p.get_width() / 2., p.get_height()), rotation=90,ha = 'center', va = 'center',size=6,xytext = (0, 10), textcoords = 'offset points')
+    ax.annotate(format(p.get_height(), '.1f'), (p.get_x() + p.get_width() / 2., p.get_height()), rotation=90,ha = 'center', va = 'center',size=8,xytext = (0, 10), textcoords = 'offset points')
 
 ax.spines['top'].set_visible(False)  
-plt.xticks(rotation=45,ha='right') 
+plt.xticks(rotation=60,ha='right') 
 #plt.title('Memory Footprint Profile')
-plt.xlabel('Applications')
-plt.ylabel('Resident Set Size (MB)')
+plt.xlabel('Applications', fontsize=14)
+plt.ylabel('Resident Set Size (MB)', fontsize=14)
 
 name_file="Max_RSS_per_application.pdf"
 plt.savefig(name_file,dpi=300, bbox_inches='tight', format='pdf')
