@@ -853,6 +853,7 @@ def plot_allocations_top1_object():
         plt.savefig(filename, bbox_inches="tight")
         plt.clf()
 def plot_percentage_access_on_PMEM_and_DRAM():
+    ''' 
     df = pd.read_csv("input_perc_access_DRAM_and_PMEM.csv", names=["app_name","DRAM","NVM"])
     df['Total'] = df['DRAM'] + df['NVM']
         
@@ -872,6 +873,53 @@ def plot_percentage_access_on_PMEM_and_DRAM():
     plt.grid()
     plt.yticks(fontsize=g_fontsize_value)
     plt.xticks(fontsize=g_fontsize_value)
+    filename = "percentage_access_on_PMEM_and_DRAM.pdf"
+    plt.savefig(filename, bbox_inches="tight")
+    plt.clf()
+    '''
+    df = pd.read_csv("input_perc_access_DRAM_and_PMEM.csv")
+    df.sort_values(by="app_name", inplace=True)
+
+    fig, axarr = plt.subplots(3, 1, figsize=(12, 6), sharex=True)
+
+    df.plot(x="app_name", y=["dram_30", "pmem_30"], kind="bar", ax=axarr[0])
+    df.plot(x="app_name", y=["dram_50", "pmem_50"], kind="bar", ax=axarr[1])
+    df.plot(x="app_name", y=["dram_70", "pmem_50"], kind="bar", ax=axarr[2])
+
+    axarr[0].spines['top'].set_visible(False)
+    for p in axarr[0].patches:
+        axarr[0].annotate(format(p.get_height(), '.1f'), (p.get_x() + p.get_width() / 2., p.get_height()), 
+    rotation=90,ha = 'center', va = 'center',size=8,xytext = (0, 10), textcoords = 'offset points')
+    axarr[0].legend(["DRAM","PMEM"], ncol=2, loc='best') #, bbox_to_anchor =(1, 1))
+    vals = axarr[0].get_yticks()
+    axarr[0].set_yticklabels(['{:.0f}%'.format(x) for x in vals], fontsize=14)
+    axarr[0].set_title("Pressure 30")
+
+    axarr[1].spines['top'].set_visible(False)
+    for p in axarr[1].patches:
+        axarr[1].annotate(format(p.get_height(), '.1f'), (p.get_x() + p.get_width() / 2., p.get_height()),
+    rotation=90,ha = 'center', va = 'center',size=8,xytext = (0, 10), textcoords = 'offset points')
+    axarr[1].legend(["DRAM","PMEM"], ncol=2, loc='best') #, bbox_to_anchor =(1, 1))
+    vals = axarr[1].get_yticks()
+    axarr[1].set_yticklabels(['{:.0f}%'.format(x) for x in vals], fontsize=14)
+    axarr[1].set_title("Pressure 50")
+
+    axarr[2].spines['top'].set_visible(False)
+    for p in axarr[2].patches:
+        axarr[2].annotate(format(p.get_height(), '.1f'), (p.get_x() + p.get_width() / 2., p.get_height()),
+    rotation=90,ha = 'center', va = 'center',size=8,xytext = (0, 10), textcoords = 'offset points')
+    axarr[2].legend(["DRAM","PMEM"], ncol=2, loc='best', bbox_to_anchor =(0.45, 1))
+    vals = axarr[2].get_yticks()
+    axarr[2].set_yticklabels(['{:.0f}%'.format(x) for x in vals], fontsize=14)
+    axarr[2].set_title("Pressure 70")
+
+    plt.xticks(fontsize=14, rotation=60)
+    plt.subplots_adjust(wspace=5, hspace=0.4)
+
+    fig.text(0.5, -0.08, 'Workloads', ha='center', fontsize=14)
+    fig.text(0.05, 0.5, 'Percentage of Total Load Access in DRAM and PMEM', va='center', rotation='vertical', fontsize=14)
+
+    axarr[2].set(xlabel=None)
     filename = "percentage_access_on_PMEM_and_DRAM.pdf"
     plt.savefig(filename, bbox_inches="tight")
     plt.clf()
