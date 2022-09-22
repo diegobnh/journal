@@ -1,3 +1,4 @@
+//#include <libsyscall_intercept_hook_point.h>
 #include "/ihome/dmosse/dmoura/0_tools/syscall/syscall_intercept/include/libsyscall_intercept_hook_point.h"
 #include <syscall.h>
 #include <errno.h>
@@ -159,6 +160,8 @@ hook(long syscall_number,
 	       pthread_mutex_lock(&count_mutex);
 	       clock_gettime(CLOCK_MONOTONIC, &ts);
                get_call_stack(call_stack);
+               fprintf(stderr,"%s\n",hash(temp_call_stack));
+
                if(arg1 > CHUNK_SIZE){
                     i = 0;
 		    total_obj = arg1/CHUNK_SIZE;
@@ -171,10 +174,8 @@ hook(long syscall_number,
                          sprintf(chunk_index, ":%d", i);
                          strcat(temp_call_stack, chunk_index);
 
-                         //sscanf(temp_call_stack, "%lu", &call_stack_hash);
-                         //fprintf(stderr, "Checking callstack hash:%s\n", temp_call_stack);
                          if(check_address(hash(temp_call_stack))){
-                             fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
+                             //fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
                              g_nodemask = 1;
                          }else{
                              g_nodemask = 4;
@@ -184,7 +185,6 @@ hook(long syscall_number,
                              fprintf(stderr,"Error:%d\n",errno);
                              perror("Error description");
                          }
-                         //fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec, CHUNK_SIZE,(void *)*result + (i * CHUNK_SIZE),hash(temp_call_stack),temp_call_stack);
 
 		         i++;
 
@@ -199,8 +199,6 @@ hook(long syscall_number,
                          sprintf(chunk_index, ":%d", i);
                          strcat(temp_call_stack, chunk_index);
 
-                         //sscanf(temp_call_stack, "%lu", &call_stack_hash);
-                         //fprintf(stderr, "Checking callstack hash:%s\n", temp_call_stack);
                          if(check_address(hash(temp_call_stack))){
                              //fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
                              g_nodemask = 1;
@@ -213,7 +211,6 @@ hook(long syscall_number,
                              perror("Error description");
                          }
 
-                         //fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec, remnant_size,(void *)*result + (i * CHUNK_SIZE),hash(temp_call_stack),temp_call_stack);
 		    }else{
                          strcat(temp_call_stack,call_stack);
                          sprintf(size, ":%d", CHUNK_SIZE);
@@ -221,10 +218,8 @@ hook(long syscall_number,
                          sprintf(chunk_index, ":%d", i);
                          strcat(temp_call_stack, chunk_index);
 
-                         //sscanf(temp_call_stack, "%lu", &call_stack_hash);
-                         //fprintf(stderr, "Checking callstack hash:%s\n", temp_call_stack);
                          if(check_address(hash(temp_call_stack))){
-                             //fprintf(stderr,"binding to dram :%s\n",hash(temp_call_stack));
+                             //fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
                              g_nodemask = 1;
                          }else{
                              g_nodemask = 4;
@@ -235,7 +230,6 @@ hook(long syscall_number,
                              perror("Error description");
                          }
 
-                         //fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec, CHUNK_SIZE,(void *)*result + (i * CHUNK_SIZE),hash(temp_call_stack),temp_call_stack);
 		    }
 	       }else{
                      strcat(temp_call_stack,call_stack);
@@ -244,10 +238,8 @@ hook(long syscall_number,
                      sprintf(chunk_index, ":%d", i);
                      strcat(temp_call_stack, chunk_index);
 
-                     //sscanf(temp_call_stack, "%lu", &call_stack_hash);
-                     //fprintf(stderr, "Checking callstack hash:%s\n", temp_call_stack);
                      if(check_address(hash(temp_call_stack))){
-                         //fprintf(stderr,"binding to dram :%s\n",hash(temp_call_stack));
+                         //fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
                          g_nodemask = 1;
                      }else{
                          g_nodemask = 4;
@@ -258,7 +250,6 @@ hook(long syscall_number,
                          perror("Error description");
                      }
 
-   		     //fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec,arg1,(void *)*result,hash(temp_call_stack),temp_call_stack);
 	       }
 
    	       pthread_mutex_unlock(&count_mutex);
