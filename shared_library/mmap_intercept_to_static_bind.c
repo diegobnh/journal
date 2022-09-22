@@ -111,6 +111,7 @@ void get_call_stack(char *call_stack) {
         read = getline(&g_line, &len, g_fp);
         p = strstr(g_line,substring);
         if(p){
+          //fprintf(stderr,"ENTROU:%s\n", g_line);
           for(i=0;i<len;i++)
           {
 	  	if(g_line[i] == '[')
@@ -128,6 +129,9 @@ void get_call_stack(char *call_stack) {
           call_stack[k] = ':';
           k++;
        }
+       //else{
+       //    fprintf(stderr,"NAO ENTROU:%s\n", g_line);
+       //}
     }
     call_stack[k-1] = '\0';
 }
@@ -160,7 +164,7 @@ hook(long syscall_number,
 	       pthread_mutex_lock(&count_mutex);
 	       clock_gettime(CLOCK_MONOTONIC, &ts);
                get_call_stack(call_stack);
-               fprintf(stderr,"%s,%d\n",temp_call_stack, hash(temp_call_stack));
+               //fprintf(stderr,"%s,%d\n",call_stack,hash(call_stack));
 
                if(arg1 > CHUNK_SIZE){
                     i = 0;
@@ -168,14 +172,23 @@ hook(long syscall_number,
 		    remnant_size = arg1 - (total_obj * CHUNK_SIZE);
 
 		    while(i < total_obj){
+
+                         memset(&temp_call_stack[0], 0, sizeof(temp_call_stack));
+                         memset(&size[0], 0, sizeof(size));
+                         memset(&chunk_index[0], 0, sizeof(chunk_index));
+
+                         //fprintf(stderr, "iter:%d\n",i);
                          strcat(temp_call_stack,call_stack);
                          sprintf(size, ":%d", CHUNK_SIZE);
                          strcat(temp_call_stack, size);
                          sprintf(chunk_index, ":%d", i);
                          strcat(temp_call_stack, chunk_index);
 
+                         //fprintf(stderr, "original %s\n", call_stack);
+                         //fprintf(stderr, "adaptado %s\n", temp_call_stack);
+
                          if(check_address(hash(temp_call_stack))){
-                             //fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
+                             fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
                              g_nodemask = 1;
                          }else{
                              g_nodemask = 4;
@@ -188,11 +201,12 @@ hook(long syscall_number,
 
 		         i++;
 
+		    }
+		    if(remnant_size > 0){
                          memset(&temp_call_stack[0], 0, sizeof(temp_call_stack));
                          memset(&size[0], 0, sizeof(size));
                          memset(&chunk_index[0], 0, sizeof(chunk_index));
-		    }
-		    if(remnant_size > 0){
+
                          strcat(temp_call_stack,call_stack);
                          sprintf(size, ":%d", remnant_size);
                          strcat(temp_call_stack, size);
@@ -200,7 +214,7 @@ hook(long syscall_number,
                          strcat(temp_call_stack, chunk_index);
 
                          if(check_address(hash(temp_call_stack))){
-                             //fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
+                             fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
                              g_nodemask = 1;
                          }else{
                              g_nodemask = 4;
@@ -212,6 +226,10 @@ hook(long syscall_number,
                          }
 
 		    }else{
+                         memset(&temp_call_stack[0], 0, sizeof(temp_call_stack));
+                         memset(&size[0], 0, sizeof(size));
+                         memset(&chunk_index[0], 0, sizeof(chunk_index));
+
                          strcat(temp_call_stack,call_stack);
                          sprintf(size, ":%d", CHUNK_SIZE);
                          strcat(temp_call_stack, size);
@@ -219,7 +237,7 @@ hook(long syscall_number,
                          strcat(temp_call_stack, chunk_index);
 
                          if(check_address(hash(temp_call_stack))){
-                             //fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
+                             fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
                              g_nodemask = 1;
                          }else{
                              g_nodemask = 4;
@@ -232,14 +250,21 @@ hook(long syscall_number,
 
 		    }
 	       }else{
+                     memset(&temp_call_stack[0], 0, sizeof(temp_call_stack));
+                     memset(&size[0], 0, sizeof(size));
+                     memset(&chunk_index[0], 0, sizeof(chunk_index));
+
                      strcat(temp_call_stack,call_stack);
                      sprintf(size, ":%d", arg1);
                      strcat(temp_call_stack, size);
-                     sprintf(chunk_index, ":%d", i);
+                     sprintf(chunk_index, ":%d", 0);
                      strcat(temp_call_stack, chunk_index);
 
+                     //fprintf(stderr, "original %s\n", call_stack);
+                     //fprintf(stderr, "adaptado %s\n", temp_call_stack);
+
                      if(check_address(hash(temp_call_stack))){
-                         //fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
+                         fprintf(stderr,"binding to dram :%d\n",hash(temp_call_stack));
                          g_nodemask = 1;
                      }else{
                          g_nodemask = 4;
