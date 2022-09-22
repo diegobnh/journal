@@ -270,17 +270,19 @@ def decide_static_mapping_between_DRAM_and_PMEM(app_dataset, df_DRAM, df_PMEM):
     original_stdout = sys.stdout # Save a reference to the original standard output
     result = subprocess.run(['pwd'], stdout=subprocess.PIPE)
 
-    
     df_footprint = pd.read_csv("../../mem_footprint.csv", names=["app_name", "mem_footprint"])
     mem_footprint = df_footprint.loc[df_footprint["app_name"] == app_dataset, 'mem_footprint'].iloc[0]
-    factor = int(result.stdout.decode('utf-8').strip().split('_')[-1])
-    mem_available = (mem_footprint * ((100-factor)/100))/1000
-    print("App:", app_dataset, " Memfootprint:", mem_footprint, " Mem Available:", mem_available)
+    if mem_footprint > 18000:
+      mem_footprint = 18000
 
+    factor = int(result.stdout.decode('utf-8').strip().split('_')[-1])
+    pressure = int(mem_footprint * ((100-factor)/100))
+    pressure = int((18000 - pressure)/1000)
+    mem_available = 18 - pressure
 
     with open('static_mapping.txt', 'w') as f:
         sys.stdout = f
-        
+
         df = df_DRAM.append(df_PMEM, ignore_index = True)
 
         df_access = df['call_stack_hash'].value_counts(normalize=True).mul(100).round(2).reset_index()
@@ -314,14 +316,17 @@ def decide_static_mapping_between_DRAM_and_PMEM(app_dataset, df_DRAM, df_PMEM):
                 dram_list.append(row['call_stack_hash'])
             else:
                 pmem_list.append(row['call_stack_hash'])
-        print("Algoritmo do Paper:")
-        print("-------------------")
-        print("Objects to DRAM:")
-        print(dram_list)
-        print("Objects to PMEM:")
-        print(pmem_list)
+        #print("Objects to DRAM:")
+        dram_list = [int(float(x)) for x in dram_list]
+        print(len(dram_list))
+        for stack_hash in dram_list:
+            print(stack_hash)
+        #print("Objects to PMEM:")
+        #pmem_list = [int(float(x)) for x in pmem_list]
+        #print(pmem_list)
+        '''
         
-        
+        df = pd.merge(df_access, df_size, on="call_stack_hash")
         dram_list=[]
         pmem_list=[]
         for index, row in df.iterrows():
@@ -335,6 +340,7 @@ def decide_static_mapping_between_DRAM_and_PMEM(app_dataset, df_DRAM, df_PMEM):
         print(dram_list)
         print("Objects to PMEM:")
         print(pmem_list)
+        '''
         sys.stdout = original_stdout ## Reset the standard output to its original value
 
 def _plot_objects(app_dataset):
