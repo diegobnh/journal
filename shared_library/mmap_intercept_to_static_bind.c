@@ -160,7 +160,7 @@ hook(long syscall_number,
 	       pthread_mutex_lock(&count_mutex);
 	       clock_gettime(CLOCK_MONOTONIC, &ts);
                get_call_stack(call_stack);
-               fprintf(stderr,"%s\n",hash(temp_call_stack));
+               fprintf(stderr,"%s,%d\n",temp_call_stack, hash(temp_call_stack));
 
                if(arg1 > CHUNK_SIZE){
                     i = 0;
