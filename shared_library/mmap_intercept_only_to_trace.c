@@ -155,6 +155,9 @@ hook(long syscall_number,
                          strcat(temp_call_stack, chunk_index);
 
                          fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec, remnant_size,(void *)*result + (i * CHUNK_SIZE),hash(temp_call_stack),temp_call_stack);
+	                 memset(&temp_call_stack[0], 0, sizeof(temp_call_stack));
+                         memset(&size[0], 0, sizeof(size));
+                         memset(&chunk_index[0], 0, sizeof(chunk_index));	    
 		    }else{
                          strcat(temp_call_stack,call_stack);
                          sprintf(size, ":%d", CHUNK_SIZE);
@@ -163,6 +166,9 @@ hook(long syscall_number,
                          strcat(temp_call_stack, chunk_index);
 
                          fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec, CHUNK_SIZE,(void *)*result + (i * CHUNK_SIZE),hash(temp_call_stack),temp_call_stack);
+		         memset(&temp_call_stack[0], 0, sizeof(temp_call_stack));
+                         memset(&size[0], 0, sizeof(size));
+                         memset(&chunk_index[0], 0, sizeof(chunk_index));
 		    }
 	       }else{
                      strcat(temp_call_stack,call_stack);
@@ -170,7 +176,11 @@ hook(long syscall_number,
                      strcat(temp_call_stack, size);
                      sprintf(chunk_index, ":%d", i);
                      strcat(temp_call_stack, chunk_index);
-   		     fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec,arg1,(void *)*result,hash(temp_call_stack),temp_call_stack);
+   		     
+		     fprintf(stderr, "%ld.%ld,mmap,%ld,%p,%ld,%s\n",ts.tv_sec,ts.tv_nsec,arg1,(void *)*result,hash(temp_call_stack),temp_call_stack);
+	             memset(&temp_call_stack[0], 0, sizeof(temp_call_stack));
+                     memset(&size[0], 0, sizeof(size));
+                     memset(&chunk_index[0], 0, sizeof(chunk_index));
 	       }
 
    	       pthread_mutex_unlock(&count_mutex);
