@@ -2,8 +2,8 @@
 #!/bin/bash
 
 sudo ./start_run_default_autonuma.sh
-./generate_memory_pressures.sh
+sudo -u dmoura ./generate_memory_pressures.sh
 sudo ./start_run_pressure_autonuma.sh
 sudo ./start_post_process.sh
-./start_mapping.sh
+sudo -u dmoura ./start_mapping.sh
 sudo ./start_run_static.sh
