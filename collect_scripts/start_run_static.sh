@@ -3,7 +3,7 @@
 source app_dataset.sh
 
 
-./generate_static_mapping.sh
+sudo -u dmoura ./generate_static_mapping.sh
 
 
 sudo -u dmoura mkdir -p  static_results
