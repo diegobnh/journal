@@ -2,21 +2,44 @@
 
 source app_dataset.sh
 
-#Static Mapping
-for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
-    echo "Running:"${APP_DATASET[$j]}
+sudo -u dmoura mkdir -p  static_results
+sudo -u dmoura chmod +777 static_results
 
-    sudo -u dmoura mkdir -p ${APP_DATASET[$j]}/static_mapping
-    sudo -u dmoura chmod +777 ${APP_DATASET[$j]}/static_mapping
+cd static_results
+sudo rm -rf * exec_time_*
 
-    cd ${APP_DATASET[$j]}/static_mapping
-    rm -f *
+for ((i = 0; i < ${#TYPES_OF_MEM_PRESSURE[@]}; i++)); do
+    for ((j = 0; j < ${#APP_DATASET[@]}; j++)); do
+        if [[ ${TYPES_OF_MEM_PRESSURE[$i]} == "30" ]]; then
+            mem_press=${MEM_PRESSURE_30[$j]}
+            cp ../${APP_DATASET[$j]}/autonuma/"static_mapping_"$mem_press".txt" .
+        elif [[ ${TYPES_OF_MEM_PRESSURE[$i]} == "50" ]]; then
+            mem_press=${MEM_PRESSURE_50[$j]}
+            cp ../${APP_DATASET[$j]}/autonuma/"static_mapping_"$mem_press".txt" .
+        else
+            mem_press=${MEM_PRESSURE_70[$j]}
+            cp ../${APP_DATASET[$j]}/autonuma/"static_mapping_"$mem_press".txt" .
+        fi
+        echo "Collecting Static Mapping:"${APP_DATASET[$j]}, " Memory Pressure of "${TYPES_OF_MEM_PRESSURE[$i]}
+  	    cp ../shared_library/mmap_intercept_to_static_bind.so .
 
-    cp ../../run.sh .
-    cp ../../../shared_library/mmap_intercept_to_static_bind.so .
+        numactl --membind=0 .././lock_memory $mem_press &
+        lock_memory_pid=$!
+        sleep 5
 
-    sudo ./run.sh ${APP[$j]} ${DATASET[$j]} static_mapping
+        start=`date +%s`
+    	sudo .././run.sh ${APP[$j]} ${DATASET[$j]} static_mapping
 
-    rm run.sh *.so call_stack.txt
-    cd ../..
+        end=`date +%s`
+        exec_time=$(echo $start $end | awk '{printf "%.2f", ($2-$1)/60}')
+        echo ${APP_DATASET[$j]},$exec_time >> exec_time_${TYPES_OF_MEM_PRESSURE[$i]}
+
+        kill -10 $lock_memory_pid
+
+        mkdir -p ${APP_DATASET[$j]}_${TYPES_OF_MEM_PRESSURE[$i]}
+        mv static_mapping_* static_out_*.csv track_info_${APP_DATASET[$j]}.csv ${APP_DATASET[$j]}_${TYPES_OF_MEM_PRESSURE[$i]}
+        rm -f call_stack.txt perf.data
+        sleep 10
+    done
 done
+
