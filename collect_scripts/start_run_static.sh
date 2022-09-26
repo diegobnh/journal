@@ -2,6 +2,10 @@
 
 source app_dataset.sh
 
+
+./generate_static_mapping.sh
+
+
 sudo -u dmoura mkdir -p  static_results
 sudo -u dmoura chmod +777 static_results
 
