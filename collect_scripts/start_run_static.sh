@@ -2,12 +2,11 @@
 
 source app_dataset.sh
 
+./generate_static_mapping.sh
+pkill -9 lock_memory
 
-sudo -u dmoura ./generate_static_mapping.sh
-
-
-sudo -u dmoura mkdir -p  static_results
-sudo -u dmoura chmod +777 static_results
+mkdir -p  static_results
+chmod +777 static_results
 
 cd static_results
 sudo rm -rf * exec_time_*
