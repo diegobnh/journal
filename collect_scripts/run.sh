@@ -98,4 +98,4 @@ else
 fi;
 
 pkill perf &> /dev/null
-
+sleep 10 #we need this because this kill takes some time
