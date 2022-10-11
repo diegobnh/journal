@@ -746,7 +746,8 @@ def plot_percentage_access_on_PMEM_and_DRAM():
     for p in axarr[1].patches:
         axarr[1].annotate(format(p.get_height(), '.1f'), (p.get_x() + p.get_width() / 2., p.get_height()),
     rotation=90,ha = 'center', va = 'center',size=10,xytext = (0, 14), textcoords = 'offset points')
-    axarr[1].legend(["DRAM","PMEM"], ncol=2, loc='best') #, bbox_to_anchor =(1, 1))
+    #axarr[1].legend(["DRAM","PMEM"], ncol=2, loc='best') #, bbox_to_anchor =(1, 1))
+    axarr[1].get_legend().remove()
     vals = axarr[1].get_yticks()
     axarr[1].set_yticklabels(['{:.0f}%'.format(x) for x in vals], fontsize=14)
     axarr[1].set_title("Pressure 50")
@@ -755,7 +756,8 @@ def plot_percentage_access_on_PMEM_and_DRAM():
     for p in axarr[2].patches:
         axarr[2].annotate(format(p.get_height(), '.1f'), (p.get_x() + p.get_width() / 2., p.get_height()),
     rotation=90,ha = 'center', va = 'center',size=10,xytext = (0, 12.9), textcoords = 'offset points')
-    axarr[2].legend(["DRAM","PMEM"], ncol=2, loc='best', bbox_to_anchor =(0.45, 1))
+    #axarr[2].legend(["DRAM","PMEM"], ncol=2, loc='best', bbox_to_anchor =(0.45, 1))
+    axarr[2].get_legend().remove()
     vals = axarr[2].get_yticks()
     axarr[2].set_yticklabels(['{:.0f}%'.format(x) for x in vals], fontsize=14)
     axarr[2].set_title("Pressure 70")
